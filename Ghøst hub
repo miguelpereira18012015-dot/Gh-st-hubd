@@ -1,0 +1,151 @@
+-- Criando a Interface Principal
+local ScreenGui = Instance.new("ScreenGui")
+local ToggleButton = Instance.new("TextButton")
+local UICorner_Toggle = Instance.new("UICorner")
+local MainPanel = Instance.new("Frame")
+local UICorner_Panel = Instance.new("UICorner")
+local Sidebar = Instance.new("Frame")
+local TabContainer = Instance.new("Frame")
+local Title = Instance.new("TextLabel")
+
+-- Configurações da ScreenGui
+ScreenGui.Parent = game.CoreGui
+ScreenGui.Name = "GhostHubFinal"
+ScreenGui.ResetOnSpawn = false
+
+-- 1. BOTÃO FLUTUANTE
+ToggleButton.Name = "ToggleButton"
+ToggleButton.Parent = ScreenGui
+ToggleButton.Position = UDim2.new(0.05, 0, 0.2, 0)
+ToggleButton.Size = UDim2.new(0, 50, 0, 50)
+ToggleButton.BackgroundColor3 = Color3.fromRGB(130, 50, 200)
+ToggleButton.Text = "Hub"
+ToggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+ToggleButton.Font = Enum.Font.SourceSansBold
+ToggleButton.TextSize = 16
+ToggleButton.Active = true
+ToggleButton.Draggable = true
+
+UICorner_Toggle.CornerRadius = UDim.new(0, 8)
+UICorner_Toggle.Parent = ToggleButton
+
+-- 2. PAINEL PRINCIPAL (Arrastável)
+MainPanel.Name = "MainPanel"
+MainPanel.Parent = ScreenGui
+MainPanel.Position = UDim2.new(0.3, 0, 0.25, 0)
+MainPanel.Size = UDim2.new(0, 470, 0, 320)
+MainPanel.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
+MainPanel.Visible = false
+MainPanel.Active = true
+MainPanel.Draggable = true
+
+UICorner_Panel.CornerRadius = UDim.new(0, 12)
+UICorner_Panel.Parent = MainPanel
+
+-- Título do Painel
+Title.Parent = MainPanel
+Title.Size = UDim2.new(1, 0, 0, 40)
+Title.BackgroundTransparency = 1
+Title.Text = "  ghØst hub"
+Title.TextColor3 = Color3.fromRGB(160, 80, 255)
+Title.Font = Enum.Font.SpecialElite
+Title.TextSize = 22
+Title.TextXAlignment = Enum.TextXAlignment.Left
+
+-- Barra Lateral para Abas
+Sidebar.Parent = MainPanel
+Sidebar.Position = UDim2.new(0, 10, 0, 45)
+Sidebar.Size = UDim2.new(0, 120, 0, 260)
+Sidebar.BackgroundTransparency = 1
+
+local SidebarLayout = Instance.new("UIListLayout")
+SidebarLayout.Parent = Sidebar
+SidebarLayout.Padding = UDim.new(0, 5)
+
+-- Container das Páginas
+TabContainer.Parent = MainPanel
+TabContainer.Position = UDim2.new(0, 140, 0, 45)
+TabContainer.Size = UDim2.new(0, 320, 0, 260)
+TabContainer.BackgroundTransparency = 1
+
+ToggleButton.MouseButton1Click:Connect(function() MainPanel.Visible = not MainPanel.Visible end)
+
+local pages = {}
+local tabButtons = {}
+
+local function CreateTab(tabName)
+    local TabButton = Instance.new("TextButton")
+    TabButton.Size = UDim2.new(1, 0, 0, 35)
+    TabButton.BackgroundColor3 = Color3.fromRGB(40, 40, 55)
+    TabButton.Text = tabName
+    TabButton.TextColor3 = Color3.fromRGB(200, 200, 200)
+    TabButton.Font = Enum.Font.SourceSansBold
+    TabButton.TextSize = 14
+    TabButton.Parent = Sidebar
+    
+    local Page = Instance.new("ScrollingFrame")
+    Page.Size = UDim2.new(1, 0, 1, 0)
+    Page.BackgroundTransparency = 1
+    Page.Visible = false
+    Page.Parent = TabContainer
+
+    local PageLayout = Instance.new("UIListLayout")
+    PageLayout.Parent = Page
+    PageLayout.Padding = UDim.new(0, 6)
+    
+    TabButton.MouseButton1Click:Connect(function()
+        for _, p in pairs(pages) do p.Visible = false end
+        for _, btn in pairs(tabButtons) do btn.BackgroundColor3 = Color3.fromRGB(40, 40, 55) end
+        Page.Visible = true
+        TabButton.BackgroundColor3 = Color3.fromRGB(130, 50, 200)
+    end)
+    table.insert(pages, Page)
+    table.insert(tabButtons, TabButton)
+    return Page
+end
+
+local function AddScriptButton(page, scriptName, loadstringCode)
+    local ScriptButton = Instance.new("TextButton")
+    ScriptButton.Size = UDim2.new(1, -10, 0, 40)
+    ScriptButton.BackgroundColor3 = Color3.fromRGB(35, 35, 45)
+    ScriptButton.Text = scriptName
+    ScriptButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    ScriptButton.Parent = page
+    ScriptButton.MouseButton1Click:Connect(function()
+        task.spawn(function() pcall(loadstringCode) end)
+    end)
+end
+
+-- CRIANDO AS ABAS
+local TabBrookhaven = CreateTab("Brookhaven")
+local TabUniversal = CreateTab("Universal")
+local TabBloxFruits = CreateTab("Blox Fruits")
+local TabShaders = CreateTab("Shaders")
+local Tab99Nights = CreateTab("99 Noites")
+
+-- ABA BROOKHAVEN (Com todos de volta)
+AddScriptButton(TabBrookhaven, "Coquette Hub", function() loadstring(game:HttpGet("https://rawscripts.net/raw/Brookhaven-RP-Coquette-Hub-41921"))() end)
+AddScriptButton(TabBrookhaven, "Cartola Hub", function() loadstring(game:HttpGet("https://raw.githubusercontent.com/Davi999z/Cartola-Hub/refs/heads/main/Brookhaven", true))() end)
+AddScriptButton(TabBrookhaven, "Lyra Hub", function() loadstring(game:HttpGet("https://raw.githubusercontent.com/kayrus999/Lyrapainel/refs/heads/main/Lyrabrookhaven"))() end)
+AddScriptButton(TabBrookhaven, "Dript Client", function() loadstring(game:HttpGet("https://raw.githubusercontent.com/realgengar/Main/refs/heads/main/base.lua"))() end)
+
+-- ABA UNIVERSAL
+AddScriptButton(TabUniversal, "Ace Aimbot", function() loadstring(game:HttpGet("https://raw.githubusercontent.com/Totocoems/Ace/main/Ace"))() end)
+AddScriptButton(TabUniversal, "Egor Roblox", function() loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-roblox-egor-script-53041"))() end)
+AddScriptButton(TabUniversal, "Invisível Hub", function() loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-FE-INVISIBLE-20021"))() end)
+AddScriptButton(TabUniversal, "Tiger Hub", function() loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-Tiger-hub-x-v4-42180"))() end)
+AddScriptButton(TabUniversal, "Fly v3", function() loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-Fly-v3-102059"))() end)
+
+-- ABA BLOX FRUITS
+AddScriptButton(TabBloxFruits, "Gravity Hub", function() loadstring(game:HttpGet("https://raw.githubusercontent.com/Dev-GravityHub/BloxFruit/refs/heads/main/Main.lua"))() end)
+AddScriptButton(TabBloxFruits, "Quantum Hub", function() loadstring(game:HttpGet("https://raw.githubusercontent.com/flazhy/QuantumOnyx/refs/heads/main/QuantumOnyx.lua"))() end)
+
+-- ABA SHADERS (Novo script solicitado)
+AddScriptButton(TabShaders, "Simple Shader", function() loadstring(game:HttpGet("https://raw.githubusercontent.com/p0e1/1/refs/heads/main/SimpleShader.lua"))() end)
+
+-- ABA 99 NOITES
+AddScriptButton(Tab99Nights, "Voidware Addon", function() loadstring(game:HttpGet("https://raw.githubusercontent.com/VapeVoidware/VW-Add/main/nightsintheforest.lua", true))() end)
+AddScriptButton(Tab99Nights, "Foxname Hub", function() loadstring(game:HttpGet("https://rawscripts.net/raw/99-Nights-in-the-Forest-Foxname-Hub-99NITF-keyless-OP-script-65901"))() end)
+
+-- Selecionar primeira aba
+if tabButtons[1] then tabButtons[1].BackgroundColor3 = Color3.fromRGB(130, 50, 200) pages[1].Visible = true end
